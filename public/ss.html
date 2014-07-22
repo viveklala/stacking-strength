@@ -1,0 +1,103 @@
+<!doctype html>
+
+<!-- ASSIGN OUR ANGULAR MODULE -->
+<html ng-app="stackingStrength">
+<head>
+	<!-- META -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
+
+	<title>Stacking Strength</title>
+
+	<!-- SCROLLS -->
+	<link rel="stylesheet" href="./css/bootstrap.min.css"><!-- load bootstrap -->
+	<style>
+		html                      { overflow-y:scroll; }
+		body                      { padding-top:50px; }
+		#exercise-list            { margin-bottom:30px; }
+        .exerciseGroup            { margin-bottom:30px; }
+        .row                      { margin-bottom:10px; margin-top:10px; }
+	</style>
+
+	<!-- SPELLS -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-route.min.js"></script><!-- load angular-route -->
+	<script src="core.js"></script>
+
+</head>
+<!-- SET THE CONTROLLER AND GET ALL EXERCISES WITH INITIALIZE FUNCTION -->
+<body ng-controller="mainController" ng-init="initialize()">
+	<div class="container">
+
+        <!-- HEADER AND EXERCISE COUNT -->
+        <div class="jumbotron text-center">
+          <h1>Stacking Strength</h1>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <button ng-class="{'btn-default': !historyActive, 'btn-primary': historyActive}" ng-init="historyActive = true" type="submit" class="btn btn-primary btn-lg btn-block" ng-click="showHistory()">Show History</button>
+          </div>
+          <div class="col-sm-6" ng-show="selectExerciseVisible">
+            <button ng-class="{'btn-default': !exercisesActive, 'btn-primary': exercisesActive}" ng-init="exercisesActive = false" type="submit" class="btn btn-lg btn-block" ng-click="showExercises()" >Select Exercise</button>
+          </div>
+
+        </div>
+
+		<!-- SELECT EXERCISE -->
+		<div ng-show="exercisesVisible">
+			<div class="col-sm-12">
+    			<button type="submit" class="btn btn-primary btn-lg btn-block" ng-click="selectExercise('Squat')">Squat</button>
+                <button type="submit" class="btn btn-primary btn-lg btn-block" ng-click="selectExercise('Deadlift')">Deadlift</button>
+                <button type="submit" class="btn btn-primary btn-lg btn-block" ng-click="selectExercise('Bench')">Bench</button>
+                <button type="submit" class="btn btn-primary btn-lg btn-block" ng-click="selectExercise('Press')">Press</button>
+			</div>
+		</div>
+
+        <!-- EXERCISE LIST -->
+        <div id="exercise-list">
+            <div class="col-sm-12">
+
+                <!-- LOOP OVER THE EXERCISES IN $scope.exercises -->
+                <div ng-repeat="set in sets" ng-show="setsVisible">
+                    <div class="btn btn-lg btn-block" ng-class="set.state" ng-click="toggleActive($index)">{{ set.exercise }} - {{set.reps}} Reps at {{ set.weight }}lbs. </div>
+                </div>
+                <!-- SAVE BUTTON -->
+                <div ng-show="setsVisible" class="btn btn-warning btn-lg btn-block" ng-click="saveExercise()">Save</div>
+            </div>
+        </div>
+
+        <div ng-show="historyVisible">
+            <div>
+                Query by:
+                <select ng-model="query">
+                    <option value="">None</option>
+                    <option value="Squat">Squat</option>
+                    <option value="Deadlift">Deadlift</option>
+                    <option value="Bench">Bench</option>
+                    <option value="Press">Press</option>
+            </select>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-bordered table-striped">
+                <tr>
+                    <th><a href="" ng-click="predicate = 'exercise'; reverse=!reverse">Exercise</a></th>
+                    <th><a href="" ng-click="predicate = 'weight'; reverse=!reverse">Weight</a></th>
+                    <th><a href="" ng-click="predicate = 'date'; reverse=!reverse">Date</a></th>
+                </tr>
+                <tr ng-repeat="lift in lifts | filter:query | orderBy:predicate:reverse">
+                    <td>{{lift.exercise}}</td>
+                    <td>{{lift.weight}}lbs.</td>
+                    <td>{{lift.date | date:'MM/dd/yyyy @ h:mma'}}</td>
+                </tr>
+              </table>
+            </div>
+        </div>
+
+
+	</div>
+
+</body>
+</html>
